@@ -229,25 +229,6 @@ def backward(activations, clipping = True):
         # cs: 256x32
         # ins: 256x32
         # print_shape("zs[t]", zs[t])
-        # print_shape("hs[t]", hs[t])
-        # print_shape("xs[t]", xs[t])
-        # print_shape("wes[t]", wes[t])
-        # print_shape("ys[t]", ys[t])
-        # print_shape("os[t]", os[t])
-        # print_shape("cs[t]", cs[t])
-        # print_shape("ins[t]", ins[t])
-        # print_shape("dby", dby)
-        # print_shape("dy", dy)
-        # print_shape("c_s[t]", c_s[t])
-        # print_shape("dbc", dbc)
-        # print_shape("dbo", dbo)
-        # print_shape("dbi", dbi)
-        # print_shape("dbf", dbf)
-        # print_shape("dWo", dWo)
-        # print_shape("dWc", dWc)
-        # print_shape("dWf", dWf)
-        # print_shape("dWi", dWi)
-        # print_shape("dWex", dWex)
 
         # dby, by: 65x1
         # dbo, dbi, dbc, dbf: 256x1
@@ -297,8 +278,6 @@ def backward(activations, clipping = True):
         # dbc (256, 1)
         dbc_ = np.multiply(dh, dh_dbc)
         dbc += np.sum(dbc_, axis = -1, keepdims = True)
-        # print_shape("dbc_", dbc_)
-        # print_shape("dbc", dbc)
 
         # Gradient of the weights of the candidate state
         # Pre-calculations dL/dWc
@@ -306,7 +285,6 @@ def backward(activations, clipping = True):
         # dc_s/dWc
         # (32x272)
         dc_s_dWc = np.dot(zs[t], dtanh(c_s[t]).T)  # UMSTRITTEN
-        # print_shape("dc_s_dWc", dc_s_dWc)
 
         # dc/dWc = dc/dc_s * dc_s/dWc
         # 32x272
@@ -323,7 +301,6 @@ def backward(activations, clipping = True):
         # Result dL/dWc
         # dL/dWc = dL/dp * dp/dy * dy/dh * dh/dc * dc/dc_s * dc_s/dWc
         dWc = np.dot(dc_s, dc_dWc)
-        # print_shape("dWc", dWc)
 
         # dbo = np.dot(hs[t].T, np.tanh(cs[t]))
 
@@ -346,8 +323,6 @@ def backward(activations, clipping = True):
         # dbi 256x1
         dbi_ = np.multiply(dh, dh_dbi)
         dbi += np.sum(dbi_, axis = -1, keepdims = True)
-        # print_shape("dbi_", dbi_)
-        # print_shape("dbi", dbi)
 
         # Gradient of the weights of the input gate
         # Pre-calculations dL/dWi
@@ -355,7 +330,6 @@ def backward(activations, clipping = True):
         # di/dWi
         # (32x272)
         di_dWi = np.dot(zs[t], dsigmoid(ins[t]).T)  # UMSTRITTEN
-        # print_shape("di_dWi", di_dWi)
 
         # dc/dWi = dc/di * di/dWi
         # 32x272
@@ -368,7 +342,6 @@ def backward(activations, clipping = True):
         # Result dL/dWi
         # dL/dWi = dL/dp * dy/dp * dy/dh * dh/dc * dc/di * di/dWi
         dWi = np.dot(dc, dc_dWi)
-        # print_shape("dWi", dWi)
 
         # -- Forget gate --
         # Gradient of the bias of the forget gate
@@ -382,7 +355,6 @@ def backward(activations, clipping = True):
         # dL/dbf = dL/dp * dp/dy * dy/dh * dh/dc * dc/df * df/dbf
         dbf_ = np.multiply(dc, dc_dbf)
         dbf += np.sum(dbf_, axis = -1, keepdims = True)
-        # print_shape("dbf", dbf)
 
         # Gradient of the weights of the forget gate
         # Pre calculations dL/dWf
@@ -390,7 +362,6 @@ def backward(activations, clipping = True):
         # df/dWf
         # (32x272)
         df_dWf = np.dot(zs[t], dsigmoid(fs[t]).T)  # UMSTRITTEN
-        # print_shape("df_dWf", df_dWf)
 
         # dc/dWf = dc/di * df/dWf
         # 32x272
@@ -400,7 +371,6 @@ def backward(activations, clipping = True):
         # Result dL/dWf
         # dL/dWf = dL/dp * dp/dy * dy/dh * dh/dc * dc/df * df/dWf
         dWf = np.dot(dc, dc_dWf)
-        # print_shape("dWf", dWf)
 
         # -- Output gate --
         # Gradient of the bias of the output gate
@@ -414,8 +384,6 @@ def backward(activations, clipping = True):
         # dL/dbo = dL/dp * dp/dy * dy/dh * dh/do * do/dbo
         dbo_ = np.multiply(dh, dh_dbo)
         dbo += np.sum(dbo_, axis = -1, keepdims = True)
-        # print_shape("dbo_", dbo_)
-        # print_shape("dbo", dbo)
 
         # Gradient of the weights of the output gate
         # Pre calculations dL/dWo
@@ -430,8 +398,6 @@ def backward(activations, clipping = True):
 
         # Results dL/dWo
         # dL/dWo = dL/dp * dp/dy * dy/dh * dh/do * do/dWo
-        # print_shape("do_dWo", do_dWo)
-        # print_shape("do", do)
 
         dWo = np.dot(do, do_dWo.T)
         # print_shape("dWo okay okay", dWo)
